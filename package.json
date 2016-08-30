@@ -1,0 +1,27 @@
+{
+  "name": "node_web_scrapper",
+  "version": "1.0.0",
+  "description": "webscrapper w7d2 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harishraisinghani/node_web_scrapper.git"
+  },
+  "keywords": [
+    "webscrapper",
+    "node.js"
+  ],
+  "author": "Harish Raisinghani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harishraisinghani/node_web_scrapper/issues"
+  },
+  "homepage": "https://github.com/harishraisinghani/node_web_scrapper#readme",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "request": "^2.74.0"
+  }
+}
