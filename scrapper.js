@@ -3,13 +3,6 @@ const request = require('request');
 const cheerio = require('cheerio');
 const URL = 'http://substack.net/images/';
 
-// request
-//   .get('http://substack.net/images/')
-//   .on('error', err => {
-//     console.log(err);
-//   })
-//   .pipe(fs.createWriteStream('sampleOutput.csv'));
-
 const getBody = (url, cb) => {
   request(url, function(error, response, body) {
     if (error) return cb(error, null);
@@ -17,17 +10,38 @@ const getBody = (url, cb) => {
   });
 }
 
+const getparsedArray = content => {
+  const $ = cheerio.load(content);
+  var fileURLS = [];
+  var filePermissions = [];
+  var fileExtensions = [];
+  var parsedFileArray = [];
+
+  $('a').each(function(i, elem) {
+    var path = $(this).attr('href');
+    fileURLS[i] = ' http://substack.net'+ path;
+    fileExtensions[i] = path.split('.').pop();
+  });
+
+  $("tr td:first-child code").each(function(i,elem) {
+    filePermissions[i] = $(this).text();
+  });
+
+  for(var i=0; i<fileURLS.length; i++) {
+    if(filePermissions[i] && filePermissions[i].indexOf('d') !== 1) {
+      parsedFileArray[i] = [fileURLS[i], fileExtensions[i], filePermissions[i]];
+    }
+  }
+  return parsedFileArray.filter(Boolean); //This removes any undefined values in the filtered array
+}
+
+
 getBody(URL, function(err, body) {
   if (err) throw new Error('We have a problem in the getBody fcn');
-  const $ = cheerio.load(body);
-  const sampleOutput = $('code').text();
-  console.log('res', sampleOutput);
-})
+  var result = getparsedArray(body);
 
-// request('http://substack.net/images/', function (error, response, body) {
-//   if (!error && response.statusCode == 200) {
-//     const $ = cheerio.load(body);
-//     var sampleOutput = $('').text();
-//     console.log(sampleOutput);
-//   }
-// });
+  var outputFile = fs.createWriteStream('images.csv');
+  for (var i = 0; i<result.length; i++) {
+    outputFile.write(result[i] + "\n");
+  }
+});
